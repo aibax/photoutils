@@ -82,6 +82,11 @@ func rename(filename string, prefix string, suffix string, datetimeFormat string
 	}
 
 	t, err := e.DateTime()
+	if err != nil {
+		result = 1
+		return
+	}
+
 	datetime := t.Format(datetimeFormat)
 
 	ext := filepath.Ext(filename)
