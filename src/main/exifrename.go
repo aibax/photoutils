@@ -1,4 +1,4 @@
-package photoutils
+package main
 
 import (
 	"flag"
