@@ -83,8 +83,15 @@ func rename(filename string, prefix string, suffix string, datetimeFormat string
 
 	t, err := e.DateTime()
 	if err != nil {
-		result = 1
-		return
+		if !exif.IsTagNotPresentError(err) {
+			result = 1
+			return
+		}
+
+		/* Exifから撮影時刻が取得できない場合 => ファイルの更新時刻を使用 */
+		info, _ := os.Stat(filename)
+		t = info.ModTime()
+		err = nil
 	}
 
 	datetime := t.Format(datetimeFormat)
