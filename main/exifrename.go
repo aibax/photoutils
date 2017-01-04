@@ -3,21 +3,22 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/rwcarlsen/goexif/exif"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/rwcarlsen/goexif/exif"
 )
 
 const (
-	/* ファイル名の日付時刻部分のフォーマット */
-	DEFAULT_DATETIME_FORMAT string = "20060102_150405"
+	// DefaultDatetimeFormat ファイル名の日付時刻部分の既定のフォーマット
+	DefaultDatetimeFormat string = "20060102_150405"
 
-	/* カウンタ部分の桁数 */
-	DEFAULT_COUNTER_LENGTH int = 2
+	// DefaultCounterLength カウンタ部分の桁数の既定値
+	DefaultCounterLength int = 2
 
-	/* コマンドのヘルプメッセージで表示する文章 */
-	USAGE = `
+	// Usage コマンドのヘルプメッセージで表示する文章
+	Usage = `
 Usage of %s:
    %s [OPTIONS] FILES...
 Options
@@ -29,17 +30,17 @@ func main() {
 	/* Options */
 	var prefix string
 	var suffix string
-	var datetimeFormat string = DEFAULT_DATETIME_FORMAT
-	var counterLength int = DEFAULT_COUNTER_LENGTH
+	var datetimeFormat = DefaultDatetimeFormat
+	var counterLength = DefaultCounterLength
 	var dryrun bool
 
 	flag.StringVar(&prefix, "prefix", "", "ファイル名の先頭に付与するプレフィックスを入力します")
 	flag.StringVar(&suffix, "suffix", "", "ファイル名の末尾に付与するサフィックスを入力します")
-	flag.IntVar(&counterLength, "cl", DEFAULT_COUNTER_LENGTH, "カウンタ部分の桁数を入力します")
+	flag.IntVar(&counterLength, "cl", DefaultCounterLength, "カウンタ部分の桁数を入力します")
 	flag.BoolVar(&dryrun, "dry-run", false, "実際に実行せずに実行結果を表示します")
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, USAGE, os.Args[0], os.Args[0])
+		fmt.Fprintf(os.Stderr, Usage, os.Args[0], os.Args[0])
 		flag.PrintDefaults()
 	}
 
@@ -88,7 +89,7 @@ func rename(filename string, prefix string, suffix string, datetimeFormat string
 			return
 		}
 
-		/* Exifから撮影時刻が取得できない場合 => ファイルの更新時刻を使用 */
+		// Exifから撮影時刻が取得できない場合 => ファイルの更新時刻を使用
 		info, _ := os.Stat(filename)
 		t = info.ModTime()
 		err = nil
