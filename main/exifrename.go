@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/rwcarlsen/goexif/exif"
 )
@@ -99,6 +100,16 @@ func rename(filename string, prefix string, suffix string, datetimeFormat string
 
 	ext := filepath.Ext(filename)
 
+	// ファイル名の抜けを防ぐため一時的なファイル名にリネームしてから処理を実行
+	tempname := fmt.Sprint(time.Now().UnixNano()) + ext
+
+	if !dryrun {
+		err := os.Rename(filename, tempname)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	for i := 0; ; i++ {
 		counter := fmt.Sprintf(fmt.Sprintf("_%%0%dd", counterLength), i)
 		n := datetime + counter + ext
@@ -108,7 +119,7 @@ func rename(filename string, prefix string, suffix string, datetimeFormat string
 			log.Print("[RENAME] ", filename, " => ", newname)
 
 			if !dryrun {
-				err := os.Rename(filename, newname)
+				err := os.Rename(tempname, newname)
 				if err != nil {
 					log.Fatal(err)
 				}
